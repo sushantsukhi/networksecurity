@@ -16,26 +16,27 @@ from networksecurity.entity.artifact_entity import DataIngestionArtifact
 import sys
 
 if __name__ == "__main__":
+    print("########### Main started ###########")
     try:
+        logging.info("Data Ingestion Started")
         training_pipeline_config = TrainingPipelineConfig()
-        data_ingestion_config = DataIngestionConfig(training_pipeline_config)
-        data_ingestion = DataIngestion(data_ingestion_config)
-        logging.info("Initiate the data ingestion")
+        dataingestionconfig = DataIngestionConfig(training_pipeline_config)
+        data_ingestion = DataIngestion(dataingestionconfig)
         data_ingestion_artifact = data_ingestion.initiate_data_ingestion()
         print(data_ingestion_artifact)
-        logging.info("Data ingestion Completed")
+        logging.info("Data Ingestion Completed")
 
+        logging.info("Data Validation Started")
         data_validation_config = DataValidationConfig(training_pipeline_config)
         data_validation = DataValidation(
             data_ingestion_artifact, data_validation_config
         )
-        logging.info("Initiate the data validation")
         data_validation_artifact = data_validation.initiate_data_validation()
         print(data_validation_artifact)
-        logging.info("Data validation Completed")
+        logging.info("Data Validation Completed")
 
+        logging.info("data Transformation Started")
         data_transformation_config = DataTransformationConfig(training_pipeline_config)
-        logging.info("data Transformation started")
         data_transformation = DataTransformation(
             data_validation_artifact, data_transformation_config
         )
@@ -43,17 +44,18 @@ if __name__ == "__main__":
             data_transformation.initiate_data_transformation()
         )
         print(data_transformation_artifact)
-        logging.info("data Transformation completed")
+        logging.info("data Transformation Completed")
 
-        logging.info("Model Training started")
+        logging.info("Model Training Started")
         model_trainer_config = ModelTrainerConfig(training_pipeline_config)
         model_trainer = ModelTrainer(
             model_trainer_config=model_trainer_config,
             data_transformation_artifact=data_transformation_artifact,
         )
         model_trainer_artifact = model_trainer.initiate_model_trainer()
-
-        logging.info("Model Training artifact created")
+        print(model_trainer_artifact)
+        logging.info("Model Training Completed")
 
     except Exception as e:
         raise NetworkSecurityException(e, sys)
+    print("######### Main Completed ###########")
